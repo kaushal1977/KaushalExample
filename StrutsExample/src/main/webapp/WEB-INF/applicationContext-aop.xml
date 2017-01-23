@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+
+<beans>
+
+	<!-- ========================= INTERCEPTING STRUTS DEFINITIONS ========================= -->
+
+	
+	<bean id="actionInterceptor" class="org.kkaushal.spring.interceptor.StrutesActionInterceptor"></bean>
+    <bean name="/helloWorld" class="org.kkaushal.action.HelloWorldAction" >
+		
+	</bean>
+    <bean id="actionAdvisor" class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+		<property name="mappedNames">
+       		<list>
+       		<value>helloWorld</value>
+			
+			</list>
+		</property>
+		<property name="advice">
+			<ref bean="actionInterceptor"/>
+		</property>
+    </bean>
+    
+	<bean id="actionProxyCreator" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		<property name="beanNames">
+			<list>
+				<value>/*</value>
+			</list>
+		</property>
+		<property name="proxyTargetClass">
+			<value>true</value>
+		</property>
+	</bean>
+	
+	<bean id="pagingProxyCreator" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		<property name="interceptorNames">
+			<list>
+				<value>actionAdvisor</value>
+			</list>
+		</property>
+		<property name="beanNames">
+			<list>
+				<value>*Service</value>
+			</list>
+		</property>
+		<property name="proxyTargetClass">
+			<value>true</value>
+		</property>
+	</bean>
+
+
+	<!-- ========================= INTERCEPTING HIBERNATE DEFINITIONS ========================= -->
+
+	<!-- <bean id="serviceProxyCreator" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		<property name="interceptorNames">
+			<list>
+				<value>transactionInterceptor</value>
+			</list>
+		</property>
+		<property name="beanNames">
+			<list>
+				<value>*Service</value>
+				<value>*Dao</value>
+				<value>/*TranManageAction</value>
+				<value>*TranManageController*</value>
+			</list>
+		</property>
+		<property name="proxyTargetClass">
+			<value>true</value>
+		</property>		
+	</bean> -->
+
+<!-- 	<bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor"> -->
+<!-- 		<property name="transactionManager" ref="transactionManager" /> -->
+<!-- 		<property name="transactionAttributeSource" ref="transactionAttributeSource" /> -->
+<!-- 	</bean> -->
+
+<!-- 	<bean id="transactionAttributeSource" class="org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource"> -->
+<!-- 		<property name="properties"> -->
+<!-- 			<props> -->
+<!-- 				<prop key="verify*">PROPAGATION_REQUIRED,ISOLATION_READ_COMMITTED </prop> -->
+<!-- 				<prop key="reject*">PROPAGATION_REQUIRED,ISOLATION_READ_COMMITTED </prop>				 -->
+<!-- 				<prop key="insert*">PROPAGATION_REQUIRED</prop> -->
+<!-- 				<prop key="update*">PROPAGATION_REQUIRED,ISOLATION_READ_COMMITTED</prop> -->
+<!-- 				<prop key="delete*">PROPAGATION_REQUIRED, ISOLATION_READ_COMMITTED </prop> -->
+<!-- 				<prop key="get*">PROPAGATION_REQUIRED, readOnly</prop> -->
+<!-- 				<prop key="auditL*">PROPAGATION_REQUIRES_NEW</prop> -->
+<!-- 				<prop key="*">PROPAGATION_REQUIRED</prop> -->
+<!-- 			</props> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+
+
+</beans>
